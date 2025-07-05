@@ -1,0 +1,55 @@
+FROM broadinstitute/gatk:latest　#image
+
+#使用するツールのインストール　
+RUN apt-get update && apt-get install -y \
+    openjdk-11-jre \
+    bwa \
+    samtools \
+    bcftools \
+    vcftools \
+    wget \
+    unzip \　
+    build-essential \
+    zlib1g-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libcurl4-openssl-dev
+
+# Trimmomatic をダウンロードしてセットアップ
+RUN wget -O Trimmomatic-0.39.zip http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip && \
+    unzip Trimmomatic-0.39.zip && \
+    mv Trimmomatic-0.39/trimmomatic-0.39.jar /usr/local/bin/trimmomatic.jar && \
+    cp -r Trimmomatic-0.39/adapters /usr/local/share/trimmomatic && \
+    rm -rf Trimmomatic-0.39 Trimmomatic-0.39.zip
+
+# 実行スクリプト作成
+RUN printf '#!/bin/bash\njava -jar /usr/local/bin/trimmomatic.jar "$@"\n' > /usr/local/bin/trimmomatic && \
+    chmod +x /usr/local/bin/trimmomatic
+
+
+
+# 最新の PLINK を追加（v1.9）
+RUN wget -O plink.zip https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20230116.zip && \
+    unzip plink.zip && \
+    mv plink /usr/local/bin/plink && \
+    chmod +x /usr/local/bin/plink && \
+    rm -rf plink.zip
+
+
+# LinkImpute を追加
+RUN wget -O LinkImpute.tar.gz https://www.cultivatingdiversity.org/uploads/5/8/2/9/58294859/20210706_linkimpute-src.tar.gz && \
+    tar -xvzf LinkImpute.tar.gz && \
+    mv LinkImpute.jar /usr/local/bin/LinkImpute.jar && \
+    chmod +x /usr/local/bin/LinkImpute.jar && \
+    rm -rf LinkImpute.tar.gz
+
+
+# Pythonライブラリをインストール
+RUN pip3 install --upgrade pip && \
+    pip3 install pandas numpy scikit-learn matplotlib keras tensorflow
+
+# Rとパッケージのインストール
+RUN apt-get update && apt-get install -y r-base && \
+    Rscript -e "install.packages(c('rrBLUP', 'devtools'), repos='https://cloud.r-project.org')" && \
+    Rscript -e "install.packages('sommer', repos='https://cloud.r-project.org')" && \
+    Rscript -e "install.packages('BGLR', repos='https://cloud.r-project.org')"
