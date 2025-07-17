@@ -54,6 +54,7 @@ RUN apt-get update && apt-get install -y r-base && \
     Rscript -e "install.packages('sommer', repos='https://cloud.r-project.org')" && \
     Rscript -e "install.packages('BGLR', repos='https://cloud.r-project.org')"
 
+# Configure Japanese locale
 RUN apt-get update && apt-get install -y locales && \
     sed -i -e 's/# \(ja_JP.UTF-8\)/\1/' /etc/locale.gen && \
     locale-gen
