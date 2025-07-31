@@ -1,0 +1,13 @@
+#PowerShell又はコマンドプロンプトを管理者モードで開く
+#コマンドプロンプトの場合、windows keyを押して cmd と入力後、コマンドプロンプトを右クリックし管理者権限で実行を選択する。
+#コマンドプロンプト上で
+wsl --install  #入力後コンピュータを再起動
+#WSL2とUbuntuの最新バージョンがインストールされる
+Linux側で使うユーザー名を設定しますusername bioinfo
+使用可能	英小文字（a–z）、数字（0–9）、ハイフン（-）、アンダースコア（_）
+New password:password bioinfo_pass
+Retype new password:password bioinfo_pass
+このパスワードがsudoを扱う際のパスワードになる
+#ubuntu のupdate、upgrade
+sudo apt update
+sudo apt full-upgrade
