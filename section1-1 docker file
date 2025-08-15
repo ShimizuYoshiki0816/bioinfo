@@ -8,12 +8,9 @@ RUN apt-get update && apt-get install -y \
     bcftools \
     vcftools \
     wget \
-    unzip \　
-    build-essential \
-    zlib1g-dev \
-    libbz2-dev \
-    liblzma-dev \
-    libcurl4-openssl-dev
+    unzip \
+    zlib1g-dev
+
 
 #  Download and set up Trimmomatic
 RUN wget -O Trimmomatic-0.39.zip http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.39.zip && \
