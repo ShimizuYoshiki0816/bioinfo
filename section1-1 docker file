@@ -19,7 +19,7 @@ RUN wget -O Trimmomatic-0.39.zip http://www.usadellab.org/cms/uploads/supplement
     cp -r Trimmomatic-0.39/adapters /usr/local/share/trimmomatic && \
     rm -rf Trimmomatic-0.39 Trimmomatic-0.39.zip
 
-# 実行スクリプト作成
+# Execution script
 RUN printf '#!/bin/bash\njava -jar /usr/local/bin/trimmomatic.jar "$@"\n' > /usr/local/bin/trimmomatic && \
     chmod +x /usr/local/bin/trimmomatic
 
