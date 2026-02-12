@@ -1,15 +1,16 @@
-FROM broadinstitute/gatk:latest　#base image
+FROM broadinstitute/gatk:latest　
 
 #Install additional tools
 RUN apt-get update && apt-get install -y \
-    openjdk-11-jre \
     bwa \
     samtools \
     bcftools \
     vcftools \
     wget \
     unzip \
-    zlib1g-dev
+    openjdk-11-jdk \
+    git \
+    zlib1g-dev                
 
 
 #  Download and set up Trimmomatic
@@ -34,11 +35,35 @@ RUN wget -O plink.zip https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_
 
 
 # Set up LinkImpute
-RUN wget -O LinkImpute.tar.gz https://www.cultivatingdiversity.org/uploads/5/8/2/9/58294859/20210706_linkimpute-src.tar.gz && \
-    tar -xvzf LinkImpute.tar.gz && \
-    mv LinkImpute.jar /usr/local/bin/LinkImpute.jar && \
-    chmod +x /usr/local/bin/LinkImpute.jar && \
-    rm -rf LinkImpute.tar.gz
+
+# commons-cli
+RUN mkdir -p /opt/jarbuild \
+ && wget -O /opt/jarbuild/commons-cli-1.4.jar \
+    https://repo1.maven.org/maven2/commons-cli/commons-cli/1.4/commons-cli-1.4.jar
+
+# unpack commons-cli
+RUN cd /opt/jarbuild \
+ && jar xf commons-cli-1.4.jar
+
+# build LinkImpute
+RUN git clone https://github.com/danielmoney/LinkImpute.git /opt/LinkImpute \
+ && cd /opt/LinkImpute/src \
+ \
+ # compile
+ && mkdir -p build \
+ && find . -name "*.java" > sources.txt \
+ && javac -cp /opt/jarbuild/commons-cli-1.4.jar \
+           -d build @sources.txt \
+ \
+ # manifest
+ && echo "Main-Class: Executable.LinkImpute" > manifest.txt \
+ \
+ # fat jar (LinkImpute + commons-cli)
+ && jar cvfm /usr/local/bin/LinkImpute.jar manifest.txt \
+      -C build . \
+      -C /opt/jarbuild org \
+ \
+ && rm -rf /opt/LinkImpute /opt/jarbuild
 
 
 # Install Python libraries
