@@ -1,0 +1,140 @@
+FROM broadinstitute/gatk:4.1.6.0
+
+RUN apt-get update && apt-get install -y --allow-unauthenticated \
+    build-essential \
+    wget \
+    unzip \
+    git \
+    zlib1g-dev \
+    autoconf \
+    automake \
+    r-base-dev \
+    pkg-config \
+    libtool \
+    perl \
+    openjdk-8-jdk \
+    python3 \
+    python3-pip \
+    locales \
+    git \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+################################
+# BWA 0.7.12
+################################
+RUN wget https://sourceforge.net/projects/bio-bwa/files/bwa-0.7.12.tar.bz2 && \
+    tar -xjf bwa-0.7.12.tar.bz2 && \
+    cd bwa-0.7.12 && \
+    make && \
+    cp bwa /usr/local/bin && \
+    cd .. && rm -rf bwa-0.7.12*
+
+################################
+# Samtools 1.7
+################################
+RUN wget https://github.com/samtools/samtools/releases/download/1.7/samtools-1.7.tar.bz2 && \
+    tar -xjf samtools-1.7.tar.bz2 && \
+    cd samtools-1.7 && \
+    ./configure && \
+    make && \
+    make install && \
+    cd .. && rm -rf samtools-1.7*
+
+################################
+# VCFtools 0.1.15
+################################
+RUN wget https://github.com/vcftools/vcftools/releases/download/v0.1.15/vcftools-0.1.15.tar.gz && \
+    tar -xzf vcftools-0.1.15.tar.gz && \
+    cd vcftools-0.1.15 && \
+    ./configure --prefix=/usr/local && \
+    make && \
+    make install && \
+    cd .. && rm -rf vcftools-0.1.15*
+################################
+# Trimmomatic 0.36
+################################
+RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmomatic-0.36.zip && \
+    unzip Trimmomatic-0.36.zip && \
+    mv Trimmomatic-0.36/trimmomatic-0.36.jar /usr/local/bin/trimmomatic.jar && \
+    cp -r Trimmomatic-0.36/adapters /usr/local/share/trimmomatic && \
+    rm -rf Trimmomatic-0.36*
+
+RUN printf '#!/bin/bash\njava -jar /usr/local/bin/trimmomatic.jar "$@"\n' > /usr/local/bin/trimmomatic && \
+    chmod +x /usr/local/bin/trimmomatic
+################################
+# PLINK 1.9
+################################
+RUN wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20230116.zip && \
+    unzip plink_linux_x86_64_20230116.zip && \
+    mv plink /usr/local/bin && \
+    chmod +x /usr/local/bin/plink && \
+    rm -rf plink_linux_x86_64_20230116*
+################################
+# LinkImputeR
+################################
+RUN git clone https://github.com/danielmoney/LinkImputeR.git
+
+WORKDIR /gatk/LinkImputeR
+# 依存ライブラリ
+RUN mkdir lib
+RUN wget -P lib https://repo1.maven.org/maven2/commons-cli/commons-cli/1.4/commons-cli-1.4.jar && \
+    wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-configuration2/2.7/commons-configuration2-2.7.jar && \
+    wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar && \
+    wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-text/1.8/commons-text-1.8.jar && \
+    wget -P lib https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar && \
+    wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar && \
+    wget -P lib https://repo1.maven.org/maven2/commons-beanutils/commons-beanutils/1.9.4/commons-beanutils-1.9.4.jar && \
+    wget -P lib https://repo1.maven.org/maven2/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar && \
+    wget -P lib https://repo1.maven.org/maven2/commons-digester/commons-digester/2.1/commons-digester-2.1.jar && \
+    wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-jexl3/3.1/commons-jexl3-3.1.jar
+
+# Javaソース
+RUN find src -name "*.java" > sources.txt
+
+# コンパイル
+RUN javac -cp "lib/*" @sources.txt
+
+# jar作成
+RUN jar cf LinkImputeR.jar -C src .
+
+################################
+# コマンド化
+################################
+RUN echo '#!/bin/bash\njava -Xmx8G -cp "/gatk/LinkImputeR/LinkImputeR.jar:/gatk/LinkImputeR/lib/*" Executable.LinkImputeR "$@"' \
+> /usr/local/bin/LinkImputeR && \
+chmod +x /usr/local/bin/LinkImputeR
+WORKDIR /gatk
+################################
+# Python libraries
+################################
+RUN python3 -m pip install --upgrade "pip<21" && \
+    pip3 install \
+    pandas \
+    numpy \
+    scikit-learn \
+    matplotlib \
+    keras==2.2.4 \
+    tensorflow==1.15
+################################
+# R genomic prediction packages
+################################
+RUN wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz && \
+    tar zxvf R-3.5.1.tar.gz && \
+    cd R-3.5.1 && \
+    ./configure --prefix=/usr/local && \
+    make && make install && \
+    cd / && rm -rf R-3.5.1*
+RUN Rscript -e "install.packages('https://cran.r-project.org/src/contrib/Archive/rrBLUP/rrBLUP_4.6.tar.gz', repos=NULL, type='source')" && \
+    Rscript -e "install.packages('https://cran.r-project.org/src/contrib/Archive/BGLR/BGLR_1.0.5.tar.gz', repos=NULL, type='source')"
+################################
+# Japanese locale
+################################
+RUN sed -i -e 's/# \(ja_JP.UTF-8\)/\1/' /etc/locale.gen && \
+    locale-gen
+
+ENV LANG=ja_JP.UTF-8
+ENV LANGUAGE=ja_JP:ja
+ENV LC_ALL=ja_JP.UTF-8
