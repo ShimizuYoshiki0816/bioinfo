@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated \
     libxml2-dev \
     vim \
     && rm -rf /var/lib/apt/lists/*
+
 ################################
 # BWA 0.7.12
 ################################
@@ -53,6 +54,7 @@ RUN wget https://github.com/vcftools/vcftools/releases/download/v0.1.15/vcftools
     make && \
     make install && \
     cd .. && rm -rf vcftools-0.1.15*
+
 ################################
 # Trimmomatic 0.36
 ################################
@@ -61,22 +63,35 @@ RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/Trimmoma
     mv Trimmomatic-0.36/trimmomatic-0.36.jar /usr/local/bin/trimmomatic.jar && \
     cp -r Trimmomatic-0.36/adapters /usr/local/share/trimmomatic && \
     rm -rf Trimmomatic-0.36*
-
 RUN printf '#!/bin/bash\njava -jar /usr/local/bin/trimmomatic.jar "$@"\n' > /usr/local/bin/trimmomatic && \
     chmod +x /usr/local/bin/trimmomatic
+
 ################################
-# PLINK 1.9
+# PLINK 1.07
 ################################
-RUN wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20230116.zip && \
-    unzip plink_linux_x86_64_20230116.zip && \
-    mv plink /usr/local/bin && \
-    chmod +x /usr/local/bin/plink && \
-    rm -rf plink_linux_x86_64_20230116*
+WORKDIR /opt
+RUN wget http://archive.debian.org/debian/pool/main/p/plink/plink_1.07+dfsg.orig.tar.xz && \
+    tar -xf plink_1.07+dfsg.orig.tar.xz
+WORKDIR /opt/plink-1.07-src
+RUN grep -rl "operator()(Locus" . | xargs -r sed -i 's/operator()(Locus\* a, Locus\* b)/operator()(Locus* a, Locus* b) const/g' || true && \
+    sed -i '771s/iterator i/iterator it/' sets.cpp && \
+    sed -i '772,780 s/\bi\b/it/g' sets.cpp && \
+    sed -i '78i\    return 0.0;' genepi.cpp && \
+    sed -i '169i\    return 0.0;' genepi.cpp && \
+    sed -i '/Missing an argument for/ a\    return 0;' helper.cpp && \
+    sed -i 's/-O3/-O2 -fpermissive -std=gnu++98/g' Makefile && \
+    sed -i '1178s/iterator i/iterator it/' elf.cpp && \
+    sed -i '1179,1200 s/\bi\b/it/g' elf.cpp && \
+    sed -i '775s/iterator j/iterator jt/' idhelp.cpp && \
+    sed -i '776,800 s/\bj\b/jt/g' idhelp.cpp && \
+RUN make clean || true && make
+RUN ln -s /opt/plink-1.07-src/plink /usr/local/bin/plink
+WORKDIR /gatk
+
 ################################
 # LinkImputeR
 ################################
 RUN git clone https://github.com/danielmoney/LinkImputeR.git
-
 WORKDIR /gatk/LinkImputeR
 RUN mkdir lib
 RUN wget -P lib https://repo1.maven.org/maven2/commons-cli/commons-cli/1.4/commons-cli-1.4.jar && \
@@ -89,17 +104,14 @@ RUN wget -P lib https://repo1.maven.org/maven2/commons-cli/commons-cli/1.4/commo
     wget -P lib https://repo1.maven.org/maven2/commons-collections/commons-collections/3.2.2/commons-collections-3.2.2.jar && \
     wget -P lib https://repo1.maven.org/maven2/commons-digester/commons-digester/2.1/commons-digester-2.1.jar && \
     wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-jexl3/3.1/commons-jexl3-3.1.jar
-
 RUN find src -name "*.java" > sources.txt
-
 RUN javac -cp "lib/*" @sources.txt
-
 RUN jar cf LinkImputeR.jar -C src .
-
 RUN echo '#!/bin/bash\njava -Xmx8G -cp "/gatk/LinkImputeR/LinkImputeR.jar:/gatk/LinkImputeR/lib/*" Executable.LinkImputeR "$@"' \
 > /usr/local/bin/LinkImputeR && \
 chmod +x /usr/local/bin/LinkImputeR
 WORKDIR /gatk
+
 ################################
 # Python libraries
 ################################
@@ -111,6 +123,7 @@ RUN python3 -m pip install --upgrade "pip<21" && \
     matplotlib \
     keras==2.2.4 \
     tensorflow==1.15
+
 ################################
 # R genomic prediction packages
 ################################
@@ -122,12 +135,12 @@ RUN wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz && \
     cd / && rm -rf R-3.5.1*
 RUN Rscript -e "install.packages('https://cran.r-project.org/src/contrib/Archive/rrBLUP/rrBLUP_4.6.tar.gz', repos=NULL, type='source')" && \
     Rscript -e "install.packages('https://cran.r-project.org/src/contrib/Archive/BGLR/BGLR_1.0.5.tar.gz', repos=NULL, type='source')"
+
 ################################
 # Japanese locale
 ################################
 RUN sed -i -e 's/# \(ja_JP.UTF-8\)/\1/' /etc/locale.gen && \
     locale-gen
-
 ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:ja
 ENV LC_ALL=ja_JP.UTF-8
