@@ -78,7 +78,6 @@ RUN wget https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20230116.zip 
 RUN git clone https://github.com/danielmoney/LinkImputeR.git
 
 WORKDIR /gatk/LinkImputeR
-# 依存ライブラリ
 RUN mkdir lib
 RUN wget -P lib https://repo1.maven.org/maven2/commons-cli/commons-cli/1.4/commons-cli-1.4.jar && \
     wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-configuration2/2.7/commons-configuration2-2.7.jar && \
@@ -91,18 +90,12 @@ RUN wget -P lib https://repo1.maven.org/maven2/commons-cli/commons-cli/1.4/commo
     wget -P lib https://repo1.maven.org/maven2/commons-digester/commons-digester/2.1/commons-digester-2.1.jar && \
     wget -P lib https://repo1.maven.org/maven2/org/apache/commons/commons-jexl3/3.1/commons-jexl3-3.1.jar
 
-# Javaソース
 RUN find src -name "*.java" > sources.txt
 
-# コンパイル
 RUN javac -cp "lib/*" @sources.txt
 
-# jar作成
 RUN jar cf LinkImputeR.jar -C src .
 
-################################
-# コマンド化
-################################
 RUN echo '#!/bin/bash\njava -Xmx8G -cp "/gatk/LinkImputeR/LinkImputeR.jar:/gatk/LinkImputeR/lib/*" Executable.LinkImputeR "$@"' \
 > /usr/local/bin/LinkImputeR && \
 chmod +x /usr/local/bin/LinkImputeR
