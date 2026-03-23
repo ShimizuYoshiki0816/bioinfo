@@ -1,3 +1,4 @@
+＃Lin et al. 2020で使用したツールを扱えます
 FROM broadinstitute/gatk:4.1.6.0
 
 RUN apt-get update && apt-get install -y --allow-unauthenticated \
