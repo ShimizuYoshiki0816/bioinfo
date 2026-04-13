@@ -1,0 +1,125 @@
+# Docker インストール手順（Ubuntu / WSL2）
+
+ここでは、Dockerをインストールするまでの手順と解説を行う。
+
+---
+
+## 1. パッケージリストの更新
+
+```bash
+sudo apt update
+```
+
+APTパッケージリスト*¹を更新する。
+
+---
+
+## 2. 必要パッケージのインストール
+
+```bash
+sudo apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
+```
+
+Dockerの公式リポジトリから安全にインストールするための準備。
+
+---
+
+## 3. GPGキーの追加
+
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+  | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+```
+
+配布元の正当性を確認するための電子署名キーを追加する。
+
+---
+
+## 4. Docker公式リポジトリの追加
+
+```bash
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" \
+  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+APT経由でDockerの最新版をインストールできるようにする。
+
+---
+
+## 5. 再度アップデート
+
+```bash
+sudo apt update
+```
+
+リポジトリ変更を反映。
+
+---
+
+## 6. Dockerのインストール
+
+```bash
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+```
+
+- docker-ce：Dockerエンジン本体  
+- docker-ce-cli：CLI操作ツール  
+- containerd.io：コンテナ実行ランタイム  
+
+---
+
+## 7. Docker Composeのインストール
+
+```bash
+sudo curl -L \
+  "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" \
+  -o /usr/local/bin/docker-compose
+```
+
+```bash
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+複数コンテナを一括管理するツール。
+
+---
+
+## 8. ユーザー権限の追加
+
+```bash
+sudo gpasswd -a $USER docker
+```
+
+sudoなしでDockerを使えるようにする。
+
+---
+
+## 9. Dockerの起動
+
+```bash
+sudo service docker start
+```
+
+Dockerデーモンを起動。
+
+---
+
+## 10. WSL2の再起動
+
+変更を確実に反映させるため再起動する。
+
+---
+
+## 補足
+
+### *¹ APTとは
+APT（Advanced Package Tool）は、UbuntuなどのDebian系Linuxで使用されるパッケージ管理ツール。  
+ソフトウェアを取得・更新するためのリポジトリ情報を管理する。
+
+---
+
+### *² GPGキーとは
+GPG Key（GNU Privacy Guard Key）は、ソフトウェア配布元の正当性を確認するための電子署名。
