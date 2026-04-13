@@ -1,3 +1,3 @@
-#　水産育種　Windowsでも実行可能な遺伝育種研究のためのBioinfomatics環境の構築
+# 水産育種　Windowsでも実行可能な遺伝育種研究のためのBioinfomatics環境の構築
 
 著者：清水誉生.,　菊池潔., 細谷将.,
