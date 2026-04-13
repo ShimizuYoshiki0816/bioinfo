@@ -1,31 +1,51 @@
-# install Docker 
-sudo apt-get update
-sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
+#ここではDockerをインストールするまでの手順と解説を行う
 
-#GPG key addition
+# Dockerのインストール
+
+sudo apt update
+#APTパッケージリスト*¹の更新
+sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release
+#Dockerの公式リポジトリ（保管場所）から安全にDockerのインストールを行える準備
+
+*¹APT：UbuntuなどのDebian系Linuxで使われるパッケージ管理ツールのことで、APTリポジトリというAPTがsoftwareパッケージを取得および更新するを行うための保管場所から取得した、パッケージ情報の一覧がAPTパッケージリストである。
+
+#GPG key*² の追加
+
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-# Add Docker's stable repository to APT sources
+*²GPG Key（GNU Privacy Guard Key）:ソフトウェアの配布元が本物であることを確認するための電子署名の仕組み
+
+# Docker公式リポジトリをAPTに追加
+
 echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+#APT経由でDockerの最新版をインストール・更新が可能になる
 
-# Install Docker Engine
+# アップデート
+
 sudo apt update
+#変更の反映
+
+# Dockerのインストール
+
 sudo apt install docker-ce docker-ce-cli containerd.io
+#Dockerの中枢であるDockerエンジン（docker-ce）とコマンドラインでの操作を可能にするコマンドラインインターフェース（docker-ce-cli）及びコンテナの実行を行うコンテナランタイム（containerd.io）のインストール
 
-# install docker-compose
+# Docker composeのインストール
+
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
+#複数のDockerコンテナを一括で扱えるようにするツールであるDocker composeのインストール
 sudo chmod +x /usr/local/bin/docker-compose
+#Docker composeに実行権限を付ける
 
 sudo gpasswd -a $USER docker
+#現在の環境におけるユーザー名で、＄USERとすることで、ユーザー名を明示しなくてもWSL2が自動でユーザー名を実行環境から参照して指定してくれる
 
-# Start the Docker daemon
+# Dockerの起動
 
 sudo service docker start
+#DockerのバックグラウンドサービスであるDockerdaemonを起動
 
-#Restart WSL
+#変更を確実に反映させるためWSL2の再起動
 
-#Pull the latest GATK Docker image
-sudo docker pull broadinstitute/gatk:latest
