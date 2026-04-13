@@ -1,0 +1,76 @@
+
+
+# WSL2（Ubuntu）セットアップ手順
+
+## 1. Windows機能の有効化
+
+検索バーに「Windowsの機能の有効化または無効化」と入力する
+
+検索結果を左クリックする
+
+開いたウィンドウ上にある
+
+- Linux 用 Windows サブシステム
+- 仮想マシン プラットフォーム
+
+のチェックボックスをオンにする
+
+## 2. 管理者権限でコマンドを実行
+
+PowerShellまたはコマンドプロンプトを管理者モードで起動する。
+
+- Windowsキーを押す  
+- 「cmd」または「PowerShell」と入力  
+- 右クリック →「管理者として実行」  
+
+## 3. WSL2のインストール
+
+```bash
+wsl --install
+```
+実行後、コンピュータを再起動する。
+WSL2とUbuntuの最新バージョンが自動的にインストールされる。
+
+## 4. Ubuntuの初期設定
+Ubuntuの初回起動時に
+- ユーザー名の設定
+- パスワード
+
+  の設定を行う
+
+### ユーザー名の設定  
+```bash
+Enter new UNIX username: yourname
+```
+
+使用可能文字
+- 英小文字(a-z)
+- 数字(0-9)
+- ハイフン(-)
+- アンダースコア(_)
+
+### パスワードの設定  
+
+```bash
+New password: your_pass
+Retype new password: your_pass
+```
+
+このパスワードは sudo 実行時に使用する。
+
+### 注意点
+
+パスワード入力時に画面に入力した文字は表示されない
+
+## 5. パッケージの更新
+
+```bash
+sudo apt update
+sudo apt full-upgrade
+```
+
+- apt update：パッケージリストの更新
+- apt full-upgrade：システム全体の更新
+
+# 以上でWSL2のセットアップは完了
+
