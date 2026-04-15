@@ -24,7 +24,7 @@
 # 方法 1
 ---
 ## 1. WSL2のセットアップ
-https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1.%20WSL2%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97.md
+https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-1.%20WSL2%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97.md
 
 ## 2. Dockerのインストール
 https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/2.%20Docker%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB.md
