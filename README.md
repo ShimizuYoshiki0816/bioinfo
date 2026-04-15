@@ -18,10 +18,10 @@
 
 # 目的
 ---
-- Dockerを使用し簡便かつ利便性の高い解析環境を構築し遺伝育種の普及性を向上させること
-- 作成した解析環境の動作確認ならびにDocker環境とDockerを介さないローカル環境との間で処理性能を比較し、ゲノム選抜育種の解析パイプラインとしての有用性を評価すること
+- 1. Dockerを使用し簡便かつ利便性の高い解析環境を構築し遺伝育種の普及性を向上させること
+- 2. 作成した解析環境の動作確認ならびにDocker環境とDockerを介さないローカル環境との間で処理性能を比較し、ゲノム選抜育種の解析パイプラインとしての有用性を評価すること
 
-# 方法
+# 方法 1
 ---
 ## 1. WSL2のセットアップ
 https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1.%20WSL2%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97.md
@@ -33,3 +33,11 @@ https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/3.%20Dockerfile%E3%81%AE
 
 ## 4. Dockerfile解説
 https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md
+
+# 方法 2
+---
+## 1.動作確認
+
+## 2.処理性能の比較
+
+
