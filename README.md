@@ -23,22 +23,22 @@
 
 # 方法 1
 ---
-## 1. WSL2のセットアップ
-https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-1.%20WSL2%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97.md
+## 1. [WSL2のセットアップ](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-1.%20WSL2%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97.md)
 
-## 2. Dockerのインストール
-https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-2.%20Docker%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB.md
 
-## 3. Dockerfileの作成からコンテナの起動までの操作方法
-https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-3.%20Dockerfile%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%8B%E3%82%89%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95%E3%81%BE%E3%81%A7%E3%81%AE%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95.md
+## 2. [Dockerのインストール](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-2.%20Docker%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB.md)
 
-## 4. Dockerfile解説
-https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md
+
+## 3. [Dockerfileの作成からコンテナの起動までの操作方法](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-3.%20Dockerfile%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%8B%E3%82%89%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95%E3%81%BE%E3%81%A7%E3%81%AE%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95.md)
+
+
+## 4. [Dockerfile解説](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md)
+
 
 # 方法 2
 ---
-## 1.動作確認
-https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/2-1%E5%8B%95%E4%BD%9C%E7%A2%BA%E8%AA%8D.md
-## 2.処理性能の比較
-https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/2-2%E5%87%A6%E7%90%86%E6%80%A7%E8%83%BD%E3%81%AE%E6%AF%94%E8%BC%83.md
+## 1.[動作確認](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/2-1%E5%8B%95%E4%BD%9C%E7%A2%BA%E8%AA%8D.md)
+
+## 2.[処理性能の比較](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/2-2%E5%87%A6%E7%90%86%E6%80%A7%E8%83%BD%E3%81%AE%E6%AF%94%E8%BC%83.md)
+
 
