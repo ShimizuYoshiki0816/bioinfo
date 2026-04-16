@@ -18,10 +18,10 @@
 
 # 目的
 ---
-- 1 Dockerを使用し簡便かつ利便性の高い解析環境を構築し遺伝育種の普及性を向上させること
-- 2 作成した解析環境の動作確認ならびにDocker環境とDockerを介さないローカル環境との間で処理性能を比較し、ゲノム選抜育種の解析パイプラインとしての有用性を評価すること
+-  Dockerを使用し簡便かつ利便性の高い解析環境を構築し遺伝育種の普及性を向上させること
 
-# 方法 1
+
+# 方法 
 ---
 ## 1. [WSL2のセットアップ](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-1.%20WSL2%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97.md)
 
@@ -35,10 +35,29 @@
 ## 4. [Dockerfile解説](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md)
 
 
-# 方法 2
+# ゲノムデータの取得
 ---
-## 1.[動作確認](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/2-1%E5%8B%95%E4%BD%9C%E7%A2%BA%E8%AA%8D.md)
+本研究では、Linらの研究で使用されたトラフグ（_Takifugu rubripes_）のアンプリコンシーケンスのデータを使用している。これらはDDBJにアーカイブされており二次利用が可能となっている。
 
-## 2.[処理性能の比較](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/2-2%E5%87%A6%E7%90%86%E6%80%A7%E8%83%BD%E3%81%AE%E6%AF%94%E8%BC%83.md)
+Linuxで下記のコマンドを実行することで入手可能
+```
+seq 0 239 | xargs -n 1 -P 8 -I {} bash -c '
+  drx=$(printf "DRX%06d" $((223812 + {})))
+  drr=$(printf "DRR%06d" $((233598 + {})))
+  wget https://ddbj.nig.ac.jp/public/ddbj_database/dra/fastq/DRA010/DRA010341/${drx}/${drr}_1.fastq.bz2
+'
+```
+```
+seq 0 239 | xargs -n 1 -P 8 -I {} bash -c '
+  drx=$(printf "DRX%06d" $((223812 + {})))
+  drr=$(printf "DRR%06d" $((233598 + {})))
+  wget https://ddbj.nig.ac.jp/public/ddbj_database/dra/fastq/DRA010/DRA010341/${drx}/${drr}_2.fastq.bz2
+'
+```
+
+続いてリファレンスゲノムのダウンロードは下記のコマンドを実行する
+```
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/180/615/GCF_000180615.1_FUGU5/GCF_000180615.1_FUGU5_genomic.fna.gz
+```
 
 
