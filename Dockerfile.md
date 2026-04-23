@@ -1,6 +1,8 @@
-##このDockerfileは各ツールの最新版を扱うことができます
+# Dockerfile
 
+## このDockerfileは各ツールの最新版を扱うことができます
 
+```
 FROM broadinstitute/gatk:latest　
 
 #Install additional tools
@@ -88,3 +90,4 @@ RUN apt-get update && apt-get install -y locales && \
 ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:ja
 ENV LC_ALL=ja_JP.UTF-8
+```
