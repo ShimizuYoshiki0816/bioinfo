@@ -35,29 +35,6 @@
 ## 4. [Dockerfile解説](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md)
 
 
-# ゲノムデータの取得
----
-本研究では、[Linら<sup>10)</sup>](https://pubmed.ncbi.nlm.nih.gov/33203997/)の研究で使用されたトラフグ（_Takifugu rubripes_）のアンプリコンシーケンスのデータを使用している。これらはDDBJにアーカイブされており二次利用が可能となっている。
 
-Linuxで下記のコマンドを実行することで入手可能
-```
-seq 0 239 | xargs -n 1 -P 8 -I {} bash -c '
-  drx=$(printf "DRX%06d" $((223812 + {})))
-  drr=$(printf "DRR%06d" $((233598 + {})))
-  wget https://ddbj.nig.ac.jp/public/ddbj_database/dra/fastq/DRA010/DRA010341/${drx}/${drr}_1.fastq.bz2
-'
-```
-```
-seq 0 239 | xargs -n 1 -P 8 -I {} bash -c '
-  drx=$(printf "DRX%06d" $((223812 + {})))
-  drr=$(printf "DRR%06d" $((233598 + {})))
-  wget https://ddbj.nig.ac.jp/public/ddbj_database/dra/fastq/DRA010/DRA010341/${drx}/${drr}_2.fastq.bz2
-'
-```
-
-続いてリファレンスゲノムのダウンロードは下記のコマンドを実行する
-```
-wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/180/615/GCF_000180615.1_FUGU5/GCF_000180615.1_FUGU5_genomic.fna.gz
-```
 
 
