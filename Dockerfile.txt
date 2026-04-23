@@ -1,3 +1,6 @@
+##このDockerfileは各ツールの最新版を扱うことができます
+
+
 FROM broadinstitute/gatk:latest　
 
 #Install additional tools
