@@ -1,0 +1,191 @@
+#!/bin/bash
+set -e
+shopt -s nullglob
+
+############################################
+# 時間計測開始
+############################################
+TOTAL_START=$(date +%s)
+
+echo "=== Pipeline Part5–12 started at $(date) ==="
+
+############################################
+# 共通設定
+############################################
+BASE=/home/shimizu140816/data
+WORKDIR=$BASE/individual/trimed/BAM/MQfiltered_bam
+REFDIR=$BASE/ref
+REF=GCF_000180615.1_FUGU5_genomic.fna
+CONTAINER=bioinfo
+
+############################################
+# Part5: CombineGVCFs
+############################################
+echo "=== Part5: CombineGVCFs ==="
+P5_START=$(date +%s)
+
+OUTDIR=$WORKDIR/combined
+mkdir -p "$OUTDIR"
+
+GVCF_ARGS=""
+for f in $WORKDIR/*.g.vcf.gz; do
+  base=$(basename "$f")
+  GVCF_ARGS="$GVCF_ARGS -V /gvcfs/$base"
+done
+
+docker run --rm \
+  -v "$WORKDIR":/gvcfs \
+  -v "$REFDIR":/ref \
+  -w /gvcfs \
+  "$CONTAINER" \
+  gatk CombineGVCFs \
+    -R /ref/$REF \
+    $GVCF_ARGS \
+    -O /gvcfs/combined/combined.g.vcf.gz
+
+P5_END=$(date +%s)
+P5_TIME=$((P5_END - P5_START))
+
+############################################
+# Part6: GenotypeGVCFs
+############################################
+echo "=== Part6: GenotypeGVCFs ==="
+P6_START=$(date +%s)
+
+docker run --rm \
+  -v "$OUTDIR":/work \
+  -v "$REFDIR":/ref \
+  -w /work \
+  "$CONTAINER" \
+  gatk GenotypeGVCFs \
+    -R /ref/$REF \
+    -V combined.g.vcf.gz \
+    -O raw.vcf.gz
+
+P6_END=$(date +%s)
+P6_TIME=$((P6_END - P6_START))
+
+############################################
+# Part8: VCF filtering
+############################################
+echo "=== Part8: VCF filtering ==="
+P8_START=$(date +%s)
+
+RAW_DIR=$OUTDIR
+docker run --rm \
+  -v "$RAW_DIR":/vcf \
+  "$CONTAINER" \
+  bash -c "
+    vcftools \
+      --gzvcf /vcf/raw.vcf.gz \
+      --min-meanDP 15 \
+      --max-meanDP 500 \
+      --max-missing 0.7 \
+      --hwe 0.05 \
+      --minDP 10 \
+      --remove-indels \
+      --recode \
+      --recode-INFO-all \
+      --out /vcf/filtered
+  "
+
+P8_END=$(date +%s)
+P8_TIME=$((P8_END - P8_START))
+
+############################################
+# Part9: plink ped/map
+############################################
+echo "=== Part9: PLINK PED/MAP ==="
+P9_START=$(date +%s)
+
+docker run --rm \
+  -v "$RAW_DIR":/vcf \
+  "$CONTAINER" \
+  plink \
+    --vcf /vcf/filtered.recode.vcf \
+    --recode \
+    --allow-extra-chr \
+    --out /vcf/filtered_data
+
+P9_END=$(date +%s)
+P9_TIME=$((P9_END - P9_START))
+
+############################################
+# Part10: Imputation
+############################################
+echo "=== Part10: Imputation ==="
+P10_START=$(date +%s)
+
+IMP_DIR=$BASE/imputed
+mkdir -p "$IMP_DIR"
+
+docker run --rm \
+  -v "$RAW_DIR":/vcf \
+  -v "$IMP_DIR":/out \
+  "$CONTAINER" \
+  bash -c "java -jar /usr/local/bin/LinkImpute.jar \
+    -q --nummask=500 --fixedk=4 --fixedl=9 \
+    /vcf/filtered_data.ped \
+    /out/imputed_data.ped"
+
+P10_END=$(date +%s)
+P10_TIME=$((P10_END - P10_START))
+
+############################################
+# Part11: VCF変換
+############################################
+echo "=== Part11: PED→VCF ==="
+P11_START=$(date +%s)
+
+MAPFILE=$RAW_DIR/filtered_data.map
+
+docker run --rm \
+  -v "$IMP_DIR":/vcf \
+  -v "$RAW_DIR":/map \
+  "$CONTAINER" \
+  plink \
+    --ped /vcf/imputed_data.ped \
+    --map /map/filtered_data.map \
+    --recode vcf \
+    --allow-extra-chr \
+    --out /vcf/imputed_data
+
+P11_END=$(date +%s)
+P11_TIME=$((P11_END - P11_START))
+
+############################################
+# Part12: 数値変換
+############################################
+echo "=== Part12: Numeric genotype ==="
+P12_START=$(date +%s)
+
+docker run --rm \
+  -v "$IMP_DIR":/vcf \
+  "$CONTAINER" \
+  plink \
+    --vcf /vcf/imputed_data.vcf \
+    --recode A \
+    --allow-extra-chr \
+    --out /vcf/genotype_numeric
+
+P12_END=$(date +%s)
+P12_TIME=$((P12_END - P12_START))
+
+############################################
+# 総時間
+############################################
+TOTAL_END=$(date +%s)
+TOTAL_TIME=$((TOTAL_END - TOTAL_START))
+
+echo ""
+echo "========= TIME SUMMARY ========="
+printf "Part5  (CombineGVCFs): %02d:%02d:%02d\n" $((P5_TIME/3600)) $((P5_TIME%3600/60)) $((P5_TIME%60))
+printf "Part6  (Genotype):     %02d:%02d:%02d\n" $((P6_TIME/3600)) $((P6_TIME%3600/60)) $((P6_TIME%60))
+printf "Part8  (Filtering):    %02d:%02d:%02d\n" $((P8_TIME/3600)) $((P8_TIME%3600/60)) $((P8_TIME%60))
+printf "Part9  (PLINK):        %02d:%02d:%02d\n" $((P9_TIME/3600)) $((P9_TIME%3600/60)) $((P9_TIME%60))
+printf "Part10 (Imputation):   %02d:%02d:%02d\n" $((P10_TIME/3600)) $((P10_TIME%3600/60)) $((P10_TIME%60))
+printf "Part11 (VCF convert):  %02d:%02d:%02d\n" $((P11_TIME/3600)) $((P11_TIME%3600/60)) $((P11_TIME%60))
+printf "Part12 (Numeric):      %02d:%02d:%02d\n" $((P12_TIME/3600)) $((P12_TIME%3600/60)) $((P12_TIME%60))
+printf "TOTAL TIME:            %02d:%02d:%02d\n" $((TOTAL_TIME/3600)) $((TOTAL_TIME%3600/60)) $((TOTAL_TIME%60))
+echo "================================"
+
