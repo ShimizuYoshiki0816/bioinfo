@@ -1,4 +1,5 @@
-＃Lin et al. 2020で使用したツールを扱えます
+## Lin et al. 2020で使用したツールを扱えます
+### このDockerfileはLinらの再解析を行うために作成しました
 FROM broadinstitute/gatk:4.1.6.0
 
 RUN apt-get update && apt-get install -y --allow-unauthenticated \
