@@ -1,0 +1,46 @@
+library(BGLR)
+
+n <- length(Y)
+n_repeats <- 10
+n_folds <- 5
+
+pred_corrsAHC <- matrix(NA, nrow = n_repeats, ncol = n_folds)
+
+for (r in 1:n_repeats) {
+  cat("Repeat", r, "\n")
+  
+  set.seed(100 + r)
+  
+  folds <- sample(rep(1:n_folds, length.out = n))
+  y_hatAHC <- rep(NA, n)
+  
+  for (k in 1:n_folds) {
+    cat("  Fold", k, "\n")
+    
+    test_idx <- which(folds == k)
+    
+    y_cv <- pheno$tHC
+    y_cv[test_idx] <- NA
+    
+    modelAHC <- BGLR(
+      y = y_cv,
+      ETA = list(list(X = X, model = "BayesA")),
+      nIter = 10000,
+      burnIn = 2000,
+      verbose = FALSE
+    )
+    
+    y_hatAHC[test_idx] <- modelAHC$yHat[test_idx]
+    
+    pred_corrsAHC[r, k] <- cor(pheno$tHC[test_idx],
+                               y_hatAHC[test_idx],
+                               use = "complete.obs")
+  }
+}
+
+mean_predAHC <- mean(pred_corrsAHC, na.rm = TRUE)
+se_predAHC <- sd(pred_corrsAHC, na.rm = TRUE) / sqrt(n_repeats * n_folds)
+
+cat("\n==== BayesA Predictive Ability ====\n")
+cat("Mean Pearson's r:", round(mean_predAHC, 4), "\n")
+cat("Standard Error  :", round(se_predAHC, 4), "\n")
