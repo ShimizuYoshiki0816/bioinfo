@@ -1,0 +1,44 @@
+library(BGLR)
+
+n <- length(Y)
+n_repeats <- 10   # 繰り返し回数
+n_folds <- 5     # fold 数
+
+# 予測能を保存する行列
+pred_corrsCHC <- matrix(NA, nrow = n_repeats, ncol = n_folds)
+
+for (r in 1:n_repeats) {
+  cat("Repeat", r, "\n")
+  seed=100+r  
+set.seed(seed)
+
+  folds <- sample(rep(1:n_folds, length.out = n))
+  y_hatCHC <- rep(NA, n)
+  
+  for (k in 1:n_folds) {
+    cat("  Fold", k, "\n")
+    
+    test_idx <- which(folds == k)
+    y_cv <- Y
+    y_cv[test_idx] <- NA
+    
+    modelCHC <- BGLR(
+      y = y_cv,
+      ETA = list(list(X = X, model = "BayesC")),
+      nIter = 10000,
+      burnIn = 2000,
+      verbose = FALSE
+    )
+    y_hatCHC[test_idx] <- modelCHC$yHat[test_idx]
+    
+    # foldごとの予測能（Pearsonのr）を保存
+    pred_corrsCHC[r, k] <- cor(Y[test_idx], y_hatCHC[test_idx], use = "complete.obs")
+  }
+}
+# 全体の平均と標準誤差
+mean_predCHC <- mean(pred_corrsCHC, na.rm = TRUE)
+se_predCHC <- sd(pred_corrsCHC, na.rm = TRUE) / sqrt(n_repeats * n_folds)
+
+cat("\n==== BayesC Predictive Ability ====\n")
+cat("Mean Pearson's r:", round(mean_predCHC, 4), "\n")
+cat("Standard Error  :", round(se_predCHC, 4), "\n")
