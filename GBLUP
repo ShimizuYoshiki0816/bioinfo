@@ -1,0 +1,60 @@
+library(rrBLUP)
+
+# ------------------------------
+# データ読み込み
+# ------------------------------
+geno_raw <- read.table("genotype_numeric.raw", header=TRUE)  # 例: ファイル名
+pheno <- read.csv("pheno.csv")                               # 例: ファイル名
+
+geno_ID <- geno$IID             # ID列を保持
+geno_mat <- as.matrix(geno)    # 残りはすでに数値行列
+rownames(geno_mat) <- geno_ID
+
+# pheno を geno の順番に合わせる
+pheno <- pheno[match(rownames(geno_mat), pheno$ID), ]
+
+# HC のトランスフォーム
+pheno$HC_sqrt <- sqrt(pheno$HC + 1)
+
+# ------------------------------
+# Cross-validationパラメータ
+# ------------------------------
+n <- nrow(pheno)
+n_repeats <- 10
+n_folds <- 10
+
+# 遺伝関係行列
+A <- A.mat(geno_mat)
+rownames(A) <- colnames(A) <- 1:n
+
+# ------------------------------
+# HC用 GBLUP
+# ------------------------------
+pred_corrs_HC <- matrix(NA, nrow=n_repeats, ncol=n_folds)
+y_hat_HC <- rep(NA, n)
+
+for(r in 1:n_repeats){
+  cat("HC Repeat", r, "\n")
+  set.seed(100 + r )
+  folds <- sample(rep(1:n_folds, length.out=n))
+  
+  for(k in 1:n_folds){
+    cat("  Fold", k, "\n")
+    test_idx <- which(folds == k)
+    pheno_cv <- pheno
+    y_obs <- pheno_cv$HC_sqrt[test_idx]
+    pheno_cv$HC_sqrt[test_idx] <- NA
+    
+    result <- kin.blup(data=pheno_cv, geno="ID", pheno="HC_sqrt", K=A)
+    y_hat_HC[test_idx] <- result$g[test_idx]
+    pred_corrs_HC[r,k] <- cor(y_obs, y_hat_HC[test_idx], use="complete.obs")
+  }
+}
+
+mean_HC <- mean(pred_corrs_HC, na.rm=TRUE)
+se_HC <- sd(pred_corrs_HC, na.rm=TRUE)/sqrt(n_repeats*n_folds)
+
+cat("\n==== GBLUP Predictive Ability (HC) ====\n")
+cat("Mean Pearson's r:", round(mean_HC,4), "\n")
+cat("Standard Error  :", round(se_HC,4), "\n")
+
