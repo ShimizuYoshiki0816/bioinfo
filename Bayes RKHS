@@ -1,0 +1,45 @@
+library(BGLR)
+K <- tcrossprod(X) / ncol(X)
+n <- length(Y)
+n_repeats <- 10   # 繰り返し回数
+n_folds <- 10     # fold 数
+
+# 予測能を保存する行列
+pred_corrsRKHC <- matrix(NA, nrow = n_repeats, ncol = n_folds)
+
+for (r in 1:n_repeats) {
+  cat("Repeat", r, "\n")
+seed=100+r
+set.seed(seed)
+  folds <- sample(rep(1:n_folds, length.out = n))
+  y_hatRKHC <- rep(NA, n)
+  
+  for (k in 1:n_folds) {
+    cat("  Fold", k, "\n")
+    
+    test_idx <- which(folds == k)
+    y_cv <- Y
+    y_cv[test_idx] <- NA
+    
+    modelRKHC <- BGLR(
+      y = y_cv,
+      ETA = list(list(K = K, model = "RKHS")),
+      nIter = 10000,
+      burnIn = 2000,
+      verbose = FALSE
+    )
+    
+    y_hatRKHC[test_idx] <- modelRKHC$yHat[test_idx]
+    
+    # foldごとの予測能（Pearsonのr）を保存
+    pred_corrsRKHC[r, k] <- cor(Y[test_idx], y_hatRKHC[test_idx], use = "complete.obs")
+  }
+}
+
+# 全体の平均と標準誤差
+mean_predRKHC <- mean(pred_corrsRKHC, na.rm = TRUE)
+se_predRKHC <- sd(pred_corrsRKHC, na.rm = TRUE) / sqrt(n_repeats * n_folds)
+
+cat("\n==== RKHS Predictive Ability ====\n")
+cat("Mean Pearson's r:", round(mean_predRKHC, 4), "\n")
+cat("Standard Error  :", round(se_predRKHC, 4), "\n")
