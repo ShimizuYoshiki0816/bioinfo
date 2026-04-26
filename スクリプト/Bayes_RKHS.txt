@@ -2,7 +2,7 @@ library(BGLR)
 K <- tcrossprod(X) / ncol(X)
 n <- length(Y)
 n_repeats <- 10   # 繰り返し回数
-n_folds <- 10     # fold 数
+n_folds <- 5     # fold 数
 
 # 予測能を保存する行列
 pred_corrsRKHC <- matrix(NA, nrow = n_repeats, ncol = n_folds)
