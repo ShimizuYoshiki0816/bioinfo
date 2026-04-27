@@ -21,10 +21,10 @@
 ### 2. [Dockerのインストール](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-2.%20Docker%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB.md)
 
 
-## 3. [Dockerfileの作成からコンテナの起動までの操作方法](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-3.%20Dockerfile%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%8B%E3%82%89%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95%E3%81%BE%E3%81%A7%E3%81%AE%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95.md)
+### 3. [Dockerfileの作成からコンテナの起動までの操作方法](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-3.%20Dockerfile%E3%81%AE%E4%BD%9C%E6%88%90%E3%81%8B%E3%82%89%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%AE%E8%B5%B7%E5%8B%95%E3%81%BE%E3%81%A7%E3%81%AE%E6%93%8D%E4%BD%9C%E6%96%B9%E6%B3%95.md)
 
 
-## 4. [Dockerfile解説](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md)
+### 4. [Dockerfile解説](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md)
 
 ### 今回作成したDockerfile
 
