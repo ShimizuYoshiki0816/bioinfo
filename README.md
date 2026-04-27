@@ -35,7 +35,7 @@
 ## 4. [Dockerfile解説](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/1-4.%20Dockerfile%E8%A7%A3%E8%AA%AC.md)
 
 
-## 5. [ゲノム解析1](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B2%E3%83%8E%E3%83%A0%E8%A7%A3%E6%9E%901)
+## 5. [ゲノム解析1](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/%E3%82%B2%E3%83%8E%E3%83%A0%E8%A7%A3%E6%9E%901)
 ### Trimomatic~GATK Haplotype Caller
 
 ## 6. [ゲノム解析2](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B2%E3%83%8E%E3%83%A0%E8%A7%A3%E6%9E%902)
