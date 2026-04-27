@@ -32,11 +32,26 @@
 
  [Linらの再解析をした際に作成したDockerfile](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/Lin%20et%20al%20Dockerfile.md)は再解析用に作成したもので各ツールをLinの解析で使用されたバージョンにそろえてある
 
-   なお、
-## 5. [ゲノム解析1](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/%E3%82%B2%E3%83%8E%E3%83%A0%E8%A7%A3%E6%9E%901)
-### Trimomatic~GATK Haplotype Caller
+    なお、上記「方法１」「方法２」「方法３」及びDockerfileの解説では [各ツールの最新版を扱えるDockerfile](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/Dockerfile.md)を用いて手法を提示している
+    
+## 各種スクリプト
+---
+### [GBLUP]()
+### [Bayes A](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_A.txt)
+### [Bayes B](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_B.txt)
+### [Bayes C](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_C.txt)
+### [Bayes Lasso](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_Lasso.txt)
+### [Bayes Ridge](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_Ridge.txt)
+### [Bayes RKHS](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_RKHS.txt)
+### [SVR Linear](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/SVR_Linear.txt)
+### [SVR Poly](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/SVR_Poly.txt)
+### [SVR rbf](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/SVR_rbf.txt)
+### [FNN](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/FNN.txt)
+### [Multi-task FNN](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Multi-task_FNN.txt)
+### [ゲノム解析1](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/%E3%82%B2%E3%83%8E%E3%83%A0%E8%A7%A3%E6%9E%901)
+#### Trimomatic~GATK Haplotype Caller
 
-## 6. [ゲノム解析2](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/%E3%82%B2%E3%83%8E%E3%83%A0%E8%A7%A3%E6%9E%902)
-### GATK CombineGVCF~ PLINK
+### [ゲノム解析2](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/%E3%82%B2%E3%83%8E%E3%83%A0%E8%A7%A3%E6%9E%902)
+#### GATK CombineGVCF~ PLINK
 
 
