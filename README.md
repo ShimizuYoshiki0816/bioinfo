@@ -36,7 +36,7 @@
     
 ## 統計解析スクリプト
 ---
-### [GBLUP]()
+### [GBLUP](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/GBLUP.txt)
 ### [Bayes A](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_A.txt)
 ### [Bayes B](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_B.txt)
 ### [Bayes C](https://github.com/ShimizuYoshiki0816/bioinfo/blob/main/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88/Bayes_C.txt)
